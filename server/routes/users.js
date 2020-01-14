@@ -20,6 +20,9 @@ router.post('/phonecode', (req, res, next) => {
 });
 
 // 注册
+// 1. 首先判断前端的验证码是否正确。
+// 2. 正确的话，其次判断是否是一个新用户，如果是就创建一个用户并返回前端登录成功。如果不是新用户，就查出用户信息并返回前端登录成功。
+// 3. 失败的话，就返回登录失败。
 router.post('signup', async (res, res, next) => {
   sms.checkCode({
     phoneNum: res.body.phoneNum,

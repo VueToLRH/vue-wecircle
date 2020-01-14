@@ -2,6 +2,7 @@
 node_modules
 /dist
 /server/smsconfig.js
+/server/ossconfig.js
 
 # local env files
 .env.local
