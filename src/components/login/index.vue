@@ -1,0 +1,96 @@
+<template>
+  <div class="container">
+    <div class="close" @click="close"></div>
+    <p class="title">手机号登录</p>
+
+    <div class="weui-cell weui-cell_vcode">
+      <div class="weui-cell__hd">
+        <label class="weui-label">手机号</label>
+      </div>
+      <div class="weui-cell__bd">
+        <input class="weui-input" maxlength="11" type="tel" pattern="^\d{11}$" placeholder="请输入手机号" v-model="phoneNum">
+      </div>
+      <div class="weui-cell__ft">
+        <button v-show="timeCode == 60" class="weui-vcode-btn" @click="getCode">获取验证码</button>
+        <div v-show="timeCode != 60" class="time-code weui-vcode-btn">{{timeCode}}s</div>
+      </div>
+    </div>
+
+    <div class="weui-cell weui-cell_vcode vcode-input scale-1px">
+      <div class="weui-cell__hd"><label class="weui-label">验证码</label></div>
+      <div class="weui-cell__bd">
+        <input v-model="code" class="weui-input" type="number" placeholder="请输入验证码">
+      </div>
+    </div>
+    <a class="weui-btn weui-btn_primary" href="javascript:" @click="signUp">确定</a>
+
+  </div>
+</template>
+
+<script>
+import service from '@/utils/service'
+
+export default {
+  name: 'login',
+  props: {
+    data: Object
+  },
+  data () {
+    return {
+      phoneNum: '', // 手机号码
+      code: '' // 验证码
+    }
+  },
+  methods: {
+    // 登陆
+    async signUp () {
+      // 判断手机号和验证码都有值才发送请求
+      if (this.phoneNum && this.code) {
+        // 发送登录请求
+        let resp = await service.post('users/signup', {
+          phoneNum: this.phoneNum,
+          code: this.code
+        })
+        if (resp.code === 0) {
+          this.$store.dispatch('setUser', resp.data) // 登录成功后，将当前用户的数据存入store，以便后续使用
+          this.$router.go(-1) // 返回上一页
+        }
+      } else {
+        weui.topTips('请输入验证码或手机号码')
+      }
+    },
+    // 获取手机验证码
+    async getCode () {
+      // 验证手机号是否合法
+      if (!/^\d{11}$/.test(this.phoneNum)) {
+        weui.topTips('请输入正确手机号')
+        return
+      }
+      if (this.phoneNum) {
+        // 发送获取验证码请求
+        let resp = await service.post('users/phonecode', {
+          phoneNum: this.phoneNum
+        })
+        if (resp.code === 0) {
+          weui.toast('验证码已发送', 1000)
+          this.countTimeCode() // 动态倒计时
+        }
+      }
+    },
+    // 倒计时
+    countTimeCode () {
+      this.clearFlag = setInterval(() => {
+        if (this.timeCode == 0) {
+          this.timeCode = 60
+          clearInterval(this.clearFlag)
+          return
+        }
+        this.timeCode--
+      }, 1000)
+    }
+  },
+  beforeDestroy () {
+    clearInterval(this.clearFlag)
+  }
+}
+</script>
