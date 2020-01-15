@@ -2,16 +2,21 @@ var path = require('path');
 var fs = require('fs');
 var express = require('express');
 var router = express.Router();
-var multer = require('multer');
+var multer = require('multer'); // 文件上传时自定义文件名和存储路径
 
 var config = require('../config');
 var ossconfig = require('../ossconfig');
 var Post = require('../models/Post.js');
+var Comment = require('../models/Comment.js');
+var Like = require('../models/Like.js');
 
+// multer.diskStorage 指定存储路径和文件名
 var storage = multer.diskStorage({
+  // 设置上传后文件路径，upload文件夹会自动创建。
   destination: function (req, file, cb) {
     cb(null, path.resolve(__dirname, '../public/upload/'));
   },
+  // 给上传文件重命名，获取添加后缀名
   filename: function (req, file, cb) {
     var extname = path.extname(file.originalname); // 获取文件扩展名
     // 将保存文件名设置为 【字段名 + 时间戳 + 文件扩展名】，比如 logo-1478521468943.jpg
@@ -20,7 +25,28 @@ var storage = multer.diskStorage({
 });
 
 var upload = multer({ storage: storage });
-var sizeOf = require('image-size');
+var sizeOf = require('image-size'); // 用于获取任何图像文件的尺寸
+
+// 根据post查询评论数据
+var getCommentByPost = async function(post){
+  return Comment.find({post:post._id}).populate('user').sort({'create':1}).exec();
+};
+// 根据post查询点赞数据
+var getLikeByPost = async function(post){
+  return Like.find({post:post._id}).populate('user').sort({'create':1}).exec();
+};
+// 根据post是否被当前用户点赞
+var checkPostIsLike = function(likes,currentUserId){
+  if (!currentUserId) return false;
+  var flag = false;
+  for (var i = 0 ; i < likes.length ; i++) {
+    if (likes[i].user._id == currentUserId._id) {
+      flag = true;
+      break;
+    }
+  }
+  return flag;
+};
 
 // 阿里云图片上传
 // 1. 前端页面通过uploader组件将图片上传，进入这个方法。
@@ -95,3 +121,31 @@ router.post('/savepost', async function (req, res, next) {
     });
   }
 })
+
+// 获取朋友圈列表数据
+router.get('/getcirclepost', async function (req, res, next) {
+  var pageSize = 5; // 分页 pageSize
+  var pageStart = req.query.pageStart || 0; // 分页 pageSize pageStart
+  var posts = await Post.find().skip(pageStart * pageSize).limit(pageSize).populate('user').sort({'create': -1}).exec();
+  // skip: 接收一个整数参数，表示查询需要跳过的条数，通过此参数就可以设置查询的起始点下标。
+  // limit: 接收一个整数参数，表示查询的条数。
+  // populate(): 表示连接查询，参数是我们创建 PostModel 时用 ref 设置的外键字段。
+  // sort(): 通过参数指定排序的字段，并使用 1 和 - 1 来指定排序的方式，其中 1 为升序排列，而 - 1 是用于降序排列。
+  // exec(): 这个方法会返回一个 Promise，为了配合 await 使用。
+  var result = [];
+  for (var i = 0; i < posts.length; i++) {
+    var comments = await getCommentByPost(posts[i]); // 根据 post 查 comments
+    var likes = await getLikeByPost(posts[i]); // 根据 post 查 likes
+    var post = JSON.parse(JSON.stringify(posts[i])); // 这里对数据做一次拷贝，否则无法直接给数据添加字段
+    post.comments = comments || [];
+    post.likes = likes || [];
+    post.isLike = checkPostIsLike(likes, req.user); // 判断是否点过赞
+    result.push(post);
+  }
+  res.json({
+    code: 0,
+    data: result
+  });
+})
+
+module.exports = router;
