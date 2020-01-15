@@ -35,13 +35,19 @@
 
 <script>
 import headerbar from './headerbar'
+import list from './list'
+import inputBar from '@/components/inputBar'
+import pullRefreshView from '@/components/pullRefreshView'
 import service from '@/utils/service'
 import os from '@/utils/os'
 
 export default {
   name: 'wecircle',
   components: {
-    headerbar
+    headerbar,
+    list,
+    inputBar,
+    pullRefreshView
   },
   data () {
     return {
