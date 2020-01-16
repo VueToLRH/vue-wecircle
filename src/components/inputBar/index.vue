@@ -8,6 +8,7 @@
       <div class="plus-btn" @click="showPanel" v-show="!option.noPlus"></div>
       <div class="create-btn weui-btn weui-btn_mini weui-btn_primary" @click="publish">发表</div>
     </div>
+    <!-- option.noPlus 表明是否需要展示面板，在朋友圈页面，是不需要这个功能的 -->
     <div class="opera-panel" v-show="!option.noPlus">
       <div class="opera-item">
         <div class="item-icon" @click="upload"></div>
@@ -21,12 +22,13 @@
 </template>
 
 <script>
-// 在移动 web 中使用 <input> 框时，与键盘相关的交互一直只一个比较头疼的问题，因为 javascript 并没有相关的接口可以操作或者获取到键盘相关的数据，
-// 唯一可以用的就是借助 <input> 输入框当获取到焦点时，会弹出一个键盘，并抛出一个 onfocus 事件，而且弹出键盘的表现在 iOS 和 android 系统中都有不同的表现：
+// 在移动 web 中使用 <input> 框时，因为 javascript 并没有相关的接口可以操作或者获取到键盘相关的数据，
+// 唯一可以用的就是借助 <input> 输入框当获取到焦点时，会弹出一个键盘，并抛出一个 onfocus 事件，
+// 而且弹出键盘的表现在 iOS 和 android 系统中都有不同的表现：
 // >>> IOS
-// >>> 1.假如输入框在屏幕的下半部分，当键盘弹出时，页面会被 “顶” 上去，这个是 webview 的默认行为，webview 会向上滚动至输入框可见的位置。
+// >>> 1. 假如输入框在屏幕的下半部分，当键盘弹出时，页面会被 “顶” 上去，这个是 webview 的默认行为，webview 会向上滚动至输入框可见的位置。
 // >>> 2. 而顶上去的距离则取决于你的输入框距离屏幕底部的距离，越靠下则被顶上去越多，越靠上则越少。
-// >>> 3.假如输入框在屏幕上半部分，则不会被 “顶” 上去。
+// >>> 3. 假如输入框在屏幕上半部分，则不会被 “顶” 上去。
 // >>> Android: 不会发生页面被顶上去的情况，键盘弹出后，会覆盖挡住一定的页面元素，页面的可视区域会变小。
 
 import {

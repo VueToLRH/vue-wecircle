@@ -87,7 +87,7 @@ export default {
         // 在 android 上，由于页面不会被顶上来，所以我们将 input 放在最底部，紧贴着键盘即可
         // 在ios里，页面会被顶上来，要单独处理
         if (os.isIOS) {
-          // 设置input在手指点击的那个位置出现10表示稍向下移动一些
+          // 设置input在手指点击的那个位置出现  10表示稍向下移动一些
           this.$refs.inputBarWrap.style.top = (currentData.pageY) + 'px'
           setTimeout(() => {
             // 通过调用 window.scroll() 可以让页面顶回去，但是具体顶多少距离需要通过输入框的位置以及键盘的高度通过计算得出，
