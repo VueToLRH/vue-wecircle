@@ -52,7 +52,7 @@ export default {
           if (Math.abs(this.pullRefresh.percentage) <= this.pullRefresh.dragThreshold) {
             let rotate = translateY / 30 * 360 // 计算圆形icon旋转的角度
             // 位移和旋转圆形icon，利用translate3d和rotate属性
-            this.$refs.circleIcon.style.webkitTransition = 'translate3d(0,' + translateY + 'px,0) rotate(' + rotate + 'deg)'
+            this.$refs.circleIcon.style.webkitTransform = `translate3d(0, ${translateY}px, 0) rotate(${rotate}deg)`
           }
         } else {
           // 向上拖动就没有进入下拉，要清除下拉刷新刷新标志位true
@@ -82,13 +82,13 @@ export default {
         setTimeout(() => {
           this.$refs.circleIconInner.classList.remove('circle-rotate')
           this.$refs.circleIcon.style.webkitTransition = '330ms'
-          this.$refs.circleIcon.style.webkitTransition = 'translate3d(0,0,0) rotate(0deg)'
+          this.$refs.circleIcon.style.webkitTransform = 'translate3d(0,0,0) rotate(0deg)'
         }, 700)
       } else {
         // 在手指离开时，位移量没有达到临界值，就自动收回，通过transition，设定一个终止值即可。
         if (this.pullRefresh.joinRefreshFlag) {
           this.$refs.circleIcon.style.webkitTransition = '330ms'
-          this.$refs.circleIcon.style.webkitTransition = 'translate3d(0,0,0) rotate(0deg)'
+          this.$refs.circleIcon.style.webkitTransform = 'translate3d(0,0,0) rotate(0deg)'
         }
       }
       this.pullRefresh.joinRefreshFlag = null // 重置joinRefreshFlag
@@ -102,7 +102,6 @@ export default {
 
 <style scoped>
   .circle-icon {
-
     position: absolute;
     left: 10px;
     top: -30px;

@@ -36,7 +36,49 @@ export default {
       lessDataFlag: false // 数据较少标识
     }
   },
+  computed: {
+    dataList () {
+      return this.$store.state.wecircleDataList
+    }
+  },
+  async created () {
+    // 第一次进入，要发起请求
+    if (!this.dataList.length) {
+      this.refresh()
+    }
+    // 刚发表完成，立刻刷新一下列表
+    if (this.$router.justPub) {
+      this.refresh()
+      this.$router.justPub = false
+    }
+  },
   methods: {
+    scroll (top) {
+      if (top <= 100) {
+        this.$bus.$emit('hideHeader')
+      } else {
+        this.$bus.$emit('showHeader')
+      }
+    },
+    refresh () {
+      this.pageStart = 0
+      this.$store.dispatch('setWecircleDataList', { first: true })
+      this.fetchData()
+    },
+    touchstart (evt) {
+      if (evt.target.classList.contains('opera-box')) {
+        return
+      }
+      if (evt.target.classList.contains('comment-icon') || evt.target.classList.contains('comment-text')) {
+        return
+      }
+      if (evt.target.classList.contains('like-icon') || evt.target.classList.contains('like-text')) {
+        return
+      }
+      // 在开始滚动时 要把 评论输入框和 点赞评论面板 隐藏
+      this.$store.dispatch('closeCLPanel', true)
+      this.$bus.$emit('showInput', false, this.data)
+    },
     async fetchData () {
       this.readyToLoad = false // 是否可以发起下一次滚动加载请求的标志位
       let resp = await service.get('post/getcirclepost', {
@@ -60,7 +102,7 @@ export default {
           user: item.user // 发表者的数据
         })
       })
-      this.$store.dispath('setWecircleDataList', array) // 通过vuex改变列表的数据
+      this.$store.dispatch('setWecircleDataList', array) // 通过vuex改变列表的数据
       // 如果返回的数据为空，证明没有数据了，就把停止滚动加载标志位只为true
       if (result.length === 0) {
         this.isend = true

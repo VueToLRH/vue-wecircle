@@ -102,6 +102,9 @@ export default {
     })
   },
   methods: {
+    cancel () {
+      this.$router.go(-1)
+    },
     oninput () {
       this.textCount = this.content.length
     },

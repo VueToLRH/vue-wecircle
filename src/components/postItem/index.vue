@@ -74,6 +74,11 @@ export default {
   props: {
     data: Object
   },
+  data () {
+    return {
+      showOpera: false
+    }
+  },
   computed: {
     // 评论面板的关闭状态
     closeCLPanelFlag () {

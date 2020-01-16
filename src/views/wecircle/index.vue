@@ -21,11 +21,13 @@
         iOS 的隐藏是通过绝对定位和 z-index 来让其不可见，
         android 的隐藏是通过绝对定位到屏幕外面来让其不可见 -->
       <!-- IOS inputBar -->
-      <div :style="{zIndex:showInput?'999':'-1',opacity:showInput?'1':'0'}" ref="inputBarWrap" class="input-wrap ios" v-if="iosInput">
+      <div v-if="iosInput" ref="inputBarWrap" class="input-wrap ios"
+        :style="{ zIndex: showInput ? '999' : '-1', opacity: showInput ? '1': '0' }">
         <inputBar ref="inputBar" :option="inputBarOption" @publish="publish"/>
       </div>
       <!-- Android inputBar -->
-      <div :style="{opacity:showInput?'1':'0',bottom:showInput?'0':'-60px'}" ref="inputBarWrap" class="input-wrap android" v-if="androidInput">
+      <div v-if="androidInput" ref="inputBarWrap" class="input-wrap android"
+        :style="{ opacity: showInput ? '1' : '0', bottom: showInput ? '0' : '-60px' }" >
         <inputBar ref="inputBar" :option="inputBarOption" @publish="publish"/>
       </div>
     </pullRefreshView>
@@ -113,6 +115,7 @@ export default {
         quality: 0.8
       },
       onBeforeQueued: function (files) {
+        console.log('onBeforeQueued files', files)
         // `this` 是轮询到的文件, `files` 是所有文件
         let imgFormatArr = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
         if (imgFormatArr.indexOf(this.type) < 0) {
@@ -132,11 +135,15 @@ export default {
         headers['wec-access-token'] = service.token
       },
       onSuccess: function (ret) {
+        console.log('onBeforeQueued files', ret)
         self.submitBg(ret)
       }
     })
   },
   methods: {
+    onRefresh () {
+      this.$refs.list.refresh()
+    },
     // 修改背景图片
     changeBg () {
       // 弹出式菜单：https://github.com/Tencent/weui.js/blob/master/docs/component/actionSheet.md
@@ -145,6 +152,13 @@ export default {
           {
             label: '更换图片',
             onClick: () => {
+              if (!this.$store.state.currentUser._id) {
+                this.$router.push({
+                  path: '/login',
+                  name: 'login'
+                })
+                return
+              }
               this.$refs.uploaderBg.click()
             }
           }
@@ -159,9 +173,9 @@ export default {
     },
     goMyPage () {
       // 判断是否登录
-      if (this.$store.state.currentUser._id) {
+      if (!this.$store.state.currentUser._id) {
         this.$router.push({
-          path: 'login',
+          path: '/login',
           name: 'login'
         })
         return
@@ -186,7 +200,79 @@ export default {
         })
         weui.toast('修改成功', 3000)
       }
+    },
+    // 发表评论
+    async publish (data) {
+      let resp = await service.post('likecomment/addcomment', {
+        content: data.value,
+        postId: data.data.id
+      })
+      if (resp.code === 0) {
+        this.$store.dispatch('addComment', {
+          content: data.value,
+          pid: resp.data.post,
+          user: this.$store.state.currentUser
+        })
+        this.showInput = false
+      } else {
+        weui.alert('评论失败!')
+      }
     }
   }
 }
 </script>
+
+<style scoped>
+  .name-info {
+    position: absolute;
+    right: 12px;
+    top: 273px;
+    border-radius: 5px;
+    display: flex;
+  }
+  .nickname {
+    margin-right: 24px;
+    margin-top: 17px;
+    color: #fff;
+    text-shadow: 1px 1px 2px #000000;
+    font-size:16px;
+  }
+  .top-img {
+    height: 320px;
+    width: 100%;
+    background-size: cover;
+    background-position: center center;
+  }
+  .avatar {
+    width: 66px;
+    height: 66px;
+    border-radius: 4px;
+  }
+  .input-wrap.ios {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 80px;
+    z-index: -1;
+  }
+  .input-wrap.android {
+    position: fixed;
+    left: 0;
+    bottom: -60px;
+    right: 0;
+    z-index: 999;
+  }
+  .add-screen {
+    position: fixed;
+    bottom: 15px;
+    left:50%;
+    width: 300px;
+    height: 166px;
+
+    background-image: url('//wecircle.oss-cn-beijing.aliyuncs.com/image-1560843180441.PNG?x-oss-process=image/resize,l_300');
+    background-size: cover;
+    transform: translateX(-50%);
+    z-index: 999;
+    border: 1px solid #ccc;
+  }
+</style>

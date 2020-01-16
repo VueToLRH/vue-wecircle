@@ -3,16 +3,21 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var tokenUtil = require('./utils/token');
+var config = require('./config');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var postRouter = require('./routes/post');
+var likecommentRouter = require('./routes/likecomment');
 
 // 初始化数据库连接
-var mongoose = require(mongoose);
+var mongoose = require('mongoose');
 // 27017 默认端口
 // 指定 useNewUrlParser: true 和 useCreateIndex: true 是为了消除警告，意思是这些接口在未来会被移除，这里需要做一下兼容。
 mongoose.connect('mongodb://127.0.0.1:27017/wecircle', {
   useNewUrlParser: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useUnifiedTopology: true
 }).then(function () {
   console.log('数据库【wecircle】连接成功');
 }).catch(function (err) {
@@ -62,5 +67,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/post', postRouter);
+app.use('/likecomment', likecommentRouter);
 
 module.exports = app;

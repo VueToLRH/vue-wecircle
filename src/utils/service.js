@@ -25,11 +25,11 @@ service.interceptors.response.use(response => {
       name: 'login',
       params: {}
     })
-    weui.toTips('请先登录')
+    weui.topTips('请先登录')
     // 发现登录过期，将本地缓存的用户信息清除
     window.localStorage.removeItem('cuser')
   } else if (response.data.code !== 0) {
-    weui.toTips(response.data.msg || '接口请求失败')
+    weui.topTips(response.data.msg || '接口请求失败')
   }
   return response.data
 }, err => {

@@ -96,7 +96,7 @@ export default {
           value: this.$refs.input.value,
           data: this.currentData
         })
-        this.$refs.input.values = ''
+        this.$refs.input.value = ''
       }
     },
     // 打开图片操作面板
