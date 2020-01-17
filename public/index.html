@@ -1,20 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>wecircle</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but wecircle doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
 
-    <script type="text/javascript" src="<%= BASE_URL %>lib/weui/weui.min.js"></script>
-    <script type="text/javascript" src="<%= BASE_URL %>lib/slider/slider.js"></script>
-    <!-- built files will be auto injected -->
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <!-- apple-mobile-web-app-status-bar-style：指定了iOS移动设备的状态栏(status bar)的样式，有Default，Black，Black-translucent可以设置。 -->
+  <!-- apple-mobile-web-app-capable：类似于 manifest.json 中的display的功能，通过设置为yes可以进入standalone模式，目前来说iOS系统还支持这个模式。 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="lrh">
+  <!-- apple-mobile-web-app-title：指定了应用的名称 -->
+  <meta name="apple-mobile-web-app-title" content="lrh">
+  <meta name="msapplication-starturl" content="/">
+  <!-- apple-touch-icon:指定了应用的图标，类似与manifest.json文件的icons配置，也是支持sizes属性，来供不同场景的选择 -->
+  <link rel="apple-touch-icon" sizes="76x76" href="./img/icons/apple-touch-icon-76x76-1.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="./img/icons/apple-touch-icon-152x152-1.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./img/icons/apple-touch-icon-180x180-1.png" />
+  <title>wecircle</title>
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but wecircle doesn't work properly without JavaScript enabled. Please enable it to
+      continue.</strong>
+  </noscript>
+  <div id="app"></div>
+
+  <script type="text/javascript" src="<%= BASE_URL %>lib/weui/weui.min.js"></script>
+  <script type="text/javascript" src="<%= BASE_URL %>lib/slider/slider.js"></script>
+
+  <script type="text/javascript">
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw-my.js', {
+            scope: '/'
+          })
+          .then(function (registration) {
+            // 注册成功
+            console.log('ServiceWorker registration successful with scope: ', registration.scope)
+          })
+          .catch(function (err) {
+            // 注册失败:(
+            console.log('ServiceWorker registration failed: ', err)
+          })
+      })
+    }
+  </script>
+  <!-- built files will be auto injected -->
+</body>
+
 </html>

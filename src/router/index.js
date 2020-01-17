@@ -49,6 +49,7 @@ const routes = [
 
 const router = new VueRouter({
   routes,
+  // 只是用于 body 滚动的情况，局部滚动是不适合
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition

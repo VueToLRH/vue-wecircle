@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
+
 var User = require('../models/User');
 var Message = require('../models/Message');
 var Chat = require('../models/Chat');
+
 var push = require('../utils/push');
 var socket = require('../utils/socket');
 

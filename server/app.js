@@ -29,8 +29,11 @@ var app = express();
 // 跨域配置 本地调试使用
 app.use(function(req, res, next) {
   // console.log(req.headers);
+  // 允许localhost来源访问
   res.header("Access-Control-Allow-Origin", 'http://localhost:8080');
+  // 允许设置返回的修改设置的header值
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, wec-access-token, Set-Cookie");
+  // 允许在跨域请求中带上Cookie
   res.header("Access-Control-Allow-Credentials", "true");
   next();
 });

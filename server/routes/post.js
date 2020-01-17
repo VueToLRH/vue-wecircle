@@ -4,11 +4,13 @@ var express = require('express');
 var router = express.Router();
 var multer = require('multer'); // 文件上传时自定义文件名和存储路径
 
-var config = require('../config');
-var ossconfig = require('../ossconfig');
 var Post = require('../models/Post.js');
 var Comment = require('../models/Comment.js');
 var Like = require('../models/Like.js');
+
+var config = require('../config');
+var ossconfig = require('../ossconfig');
+var push = require('../utils/push');
 
 // multer.diskStorage 指定存储路径和文件名
 var storage = multer.diskStorage({
