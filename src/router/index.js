@@ -44,6 +44,16 @@ const routes = [
     path: '/changedesc',
     name: 'changedesc',
     component: () => import(/* webpackChunkName: "changenickname" */ '@/views/changedesc')
+  },
+  {
+    path: '/chat',
+    name: 'chat',
+    component: () => import(/* webpackChunkName: "chat" */ '@/views/chat')
+  },
+  {
+    path: '/chatlist',
+    name: 'chatlist',
+    component: () => import(/* webpackChunkName: "chatlist" */ '@/views/chatlist')
   }
 ]
 
