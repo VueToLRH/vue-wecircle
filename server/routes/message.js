@@ -6,6 +6,26 @@ var Chat = require('../models/Chat');
 var push = require('../utils/push');
 var socket = require('../utils/socket');
 
+// 根据关键字模糊查询
+var getMsgByChat = async function (chat, keyword) {
+  var reg = new RegExp(keyword, 'i');
+  var list = [];
+  if (keyword) {
+    var list = await Message.find({
+      chat: chat._id,
+      'content.type':'str',
+      'content.value': {
+        $regex: reg
+      }
+    }).sort({'create':-1}).exec();
+  } else {
+    var list = await Message.find({
+      chat: chat._id
+    }).sort({'create':-1}).exec();
+  }
+  return list[0] || false;
+};
+
 // 添加消息
 var addmsg = async function(myId, content, toUserId) {
   var chatId = '';
@@ -84,6 +104,9 @@ router.post('/addmsg', async (req, res, next) => {
 });
 
 // 查询聊天记录接口
+// 1. 首先，我们需要根据当前的用户查询出关联的Chat数据，我们使用的是Chat.find()方法，这里要注意一下，fromUser和toUser都可以进行匹配查询。
+// 2. 然后，根据每个Chat的信息，找到关联的message，并查询出数据。我们使用Message.find()方法，并传入关键字keyword。
+// 3. 将message数据进行组装，并返回。
 router.get('/getchathistory', async (req, res, next) => {
   try {
     var myId = req.user._id;
@@ -118,6 +141,48 @@ router.get('/getchathistory', async (req, res, next) => {
       data: err
     });
   }
+});
+
+// 查找私信列表接口
+router.get('/getchatlist', async (req, res, next) => {
+  try {
+    var myId = req.user._id;
+    var keyword = req.query.keyword || ''; // 搜索关键字
+    var list = await Chat.find({
+      $or:[
+        { fromUser: myId },
+        { toUser: myId }
+      ]
+    }).populate('fromUser').populate('toUser').sort({ 'lastMsgTime' : -1 }).exec();
+    var result = [];
+    for (var i = 0; i < list.length; i++) {
+      var chat = JSON.parse(JSON.stringify(list[i]));
+      // 根据chat的id，找到对应的消息列表里的第一条消息内容
+      chat.msg = await getMsgByChat(list[i], keyword);
+      if (chat.msg) {
+        var user = {};
+        if (chat.toUser._id === myId) {
+          user = chat.fromUser;
+        } else {
+          user = chat.toUser;
+        }
+        chat.user = user;
+        result.push(chat);
+      }
+    }
+    res.json({
+      code: 0,
+      data: result
+    });
+  } catch (err) {
+    res.json({
+      code: 1,
+      data: err
+    });
+  }
 })
 
-module.exports = router;
+module.exports = {
+  router: router,
+  addmsg: addmsg
+};

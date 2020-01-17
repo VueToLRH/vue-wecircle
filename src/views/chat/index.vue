@@ -22,7 +22,7 @@
 import inputBar from '@/components/inputBar'
 import navHeader from '@/components/navHeader'
 import chatItem from '@/components/chatItem'
-// import service from '@/utils/service'
+import service from '@/utils/service'
 import os from '@/utils/os'
 
 export default {
@@ -85,6 +85,12 @@ export default {
     }
   },
   methods: {
+    async fetchData () {
+      let resp = await service.get('message/getchathistory', {
+        toUserId: this.toUserId
+      })
+      this.dataList = resp.data
+    },
     scrollToEnd (immediate) {
       let ele = this.$refs.chatView
       if (immediate) {
@@ -95,12 +101,20 @@ export default {
         ele.scrollTop = ele.scrollHeight
       }, 200)
     },
+    // 关闭面板
     closePanel () {
       this.bottomStyle = ''
       this.bottomClass = this.bottomClass.replace(' show', '')
       this.$refs.inputBar.closePanel()
     },
-    // 显示/隐藏图片操作面板
+    touchstart () {
+      this.closePanel()
+      this.$refs.inputBar.blurInput()
+    },
+    pxtovw (px) {
+      return (px / 375 * 100) + 'vw'
+    },
+    // 显示/隐藏底部图片操作面板
     showBottom () {
       if (this.bottomClass.indexOf('show') > -1) {
         this.bottomStyle = ''
@@ -108,6 +122,10 @@ export default {
       } else {
         this.bottomClass += ' show'
       }
+    },
+    // 正常情况下，直接隐藏输入框即可
+    hideBottom () {
+      this.closePanel()
     },
     // 在图片操作面板处于展开状态时的处理逻辑
     // 问题：从图片面板状态直接进入输入时，会发现当键盘呼起时输入框被移动到了页面的最底部
@@ -128,6 +146,43 @@ export default {
         } else {
           this.closePanel() // Android无需修改，直接将图片操作面板隐藏即可
         }
+      }
+    },
+    afterCommit (obj) {
+      this.dataList.push(obj)
+      this.$nextTick(() => {
+        this.scrollToEnd()
+      })
+    },
+    async publish (obj) {
+      if (!obj.value) return
+      let o = {
+        toUser: this.toUserId,
+        content: { type: 'str', value: obj.value }
+      }
+      let resp = await service.post('message/addmsg', o)
+      this.afterCommit({
+        content: { type: 'str', value: obj.value },
+        formUser: this.$store.state.currentUser,
+        mine: true
+      })
+      if (resp.code !== 0) {
+        weui.topTips('发送失败!')
+      }
+    },
+    async uploaded (obj) {
+      let o = {
+        toUser: this.toUserId,
+        content: { type: 'pic', value: obj.data }
+      }
+      let resp = await service.post('message/addmsg', o)
+      this.afterCommit({
+        content: { type: 'pic', value: obj.data },
+        formUser: this.$store.state.currentUser,
+        mine: true
+      })
+      if (resp.code !== 0) {
+        weui.topTips('发送失败！')
       }
     }
   }
