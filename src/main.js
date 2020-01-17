@@ -6,6 +6,9 @@ import VueSocketio from 'vue-socket.io'
 import socketio from 'socket.io-client'
 
 import service from '@/utils/service'
+
+import './registerServiceWorker'
+
 import './assets/css/common.css'
 import './assets/css/animate.css'
 import './assets/css/weui.min.css'

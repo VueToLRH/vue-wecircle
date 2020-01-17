@@ -18,9 +18,9 @@ webpush.setVapidDetails(
 module.exports = async function (userid, data) {
   // 国内使用的话，需要设置代理才行
   // 由于我们使用的推送服务器是基于谷歌的FCM，这个服务在国内是无法使用的（或者说有时可用有时不可用），
-  // 所以我们需要设置一个代理，当然网上有很多免费的国外代理，可以在http://www.freeproxylists.net/zh/hk.html找找，如果想要稳定一点的可以掏钱买一个 VPN 服务。
+  // 所以我们需要设置一个代理，当然网上有很多免费的国外代理，可以在 http://www.freeproxylists.net/zh/hk.html 找找，如果想要稳定一点的可以掏钱买一个 VPN 服务。
   var option = {
-    proxy: 'http://43.250.124.98:9001'
+    proxy: 'http://165.225.36.69:10000'
     // http://www.freeproxylists.net/zh/hk.html，https://www.baibianip.com/home/free.html 如果不能使用，请定期更换
   };
   // 从数据库中找到subscription
@@ -32,12 +32,15 @@ module.exports = async function (userid, data) {
   if (obj && obj.subscription) {
     console.log('找到subscription 可以推送');
     // 调用webpush的sendNotification来发起推送通知
+    console.log('推送数据 obj.subscription：', obj.subscription);
+    console.log('推送数据 data', data);
+    console.log('推送数据 option', option);
     webpush.sendNotification(JSON.parse(obj.subscription), JSON.stringify(data), option)
       .then(function () {
         console.log('subscription推送成功');
       })
       .catch(function (err) {
-        console.error(err);
+        console.log(err);
       });
   }
 }

@@ -4,6 +4,7 @@
 // 在 Service Worker 里注册push事件来接收push请求。
 // 添加service worker对push的监听
 self.addEventListener('push', function (e) {
+  console.log('Service Worker 接收push请求')
   var data = e.data
   if (e.data) {
     data = data.json()
@@ -35,7 +36,8 @@ self.addEventListener('notificationclick', function (e) {
       }
       // 如果需要进入程序就新开一个窗口
       if (action === 'go-in') {
-        return self.clients.openWindow('https://app.nihaoshijie.com.cn/index.html#/mypage')
+        return self.clients.openWindow('http://localhost:8080/#/mypage')
+        // return self.clients.openWindow('https://app.nihaoshijie.com.cn/index.html#/mypage')
       }
     })
   )
