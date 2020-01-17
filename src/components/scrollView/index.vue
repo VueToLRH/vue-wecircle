@@ -39,7 +39,7 @@ export default {
       let proLoadDis = 30 // 通知距离底部还有多少px的阈值
       // 判断是否页面滚动到底部
       if ((scrollTop + clientHeight) >= (scrollHeight - proLoadDis)) {
-        if (this.isend) { // 是否已经滚动到最后一页
+        if (!this.isend) { // 是否已经滚动到最后一页
           if (!this.readyToLoad) { return } // 判断在一个api请求未完成时不能触发第二次滚动到底部的回调
           this.$emit('loadCallback') // 通知父组件触发滚动到底部事件
         }

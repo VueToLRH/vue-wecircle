@@ -20,16 +20,18 @@ module.exports = {
   setSocket (socket) {
     // 用户进入聊天页面代表登陆
     socket.on('login', function (obj) {
-      console.log(`用户${obj._id}进入聊天页面`);
+      console.log(`用户${obj._id}：【进入】聊天页面`);
       socketPoll[obj._id] = socket; // 将 用户id 和 当前用户 的socket存起来
     });
     // 用户离开聊天页面代表登出
     socket.on('loginout', function (obj) {
+      console.log(`用户${obj._id}：【离开】聊天页面`);
       delete socketPoll[obj._id]; // 将 该用户 从用户池中删除
     });
   },
   sendMsg (obj) {
-    var currentSocket = socketPoll[obj._id]; // 根据 id，找到对应的socket
+    var currentSocket = socketPoll[obj.id]; // 根据 id，找到对应的socket
+    console.log('向客户端推送消息');
     if (currentSocket) {
       currentSocket.emit(obj.action, obj.data); // 向客户端推送消息
     }

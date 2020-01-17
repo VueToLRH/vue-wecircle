@@ -5,10 +5,12 @@ var logger = require('morgan');
 
 var tokenUtil = require('./utils/token');
 var config = require('./config');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var postRouter = require('./routes/post');
 var likecommentRouter = require('./routes/likecomment');
+var messageRouter = require('./routes/message');
 
 // 初始化数据库连接
 var mongoose = require('mongoose');
@@ -72,5 +74,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/post', postRouter);
 app.use('/likecomment', likecommentRouter);
+app.use('/message', messageRouter.router);
 
 module.exports = app;

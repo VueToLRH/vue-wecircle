@@ -85,7 +85,7 @@ export default {
       return this.$store.state.closeCLPanelFlag
     },
     // 多图样式
-    imgWrapSyle () {
+    imgWrapStyle () {
       let self = this
       return item => {
         return {

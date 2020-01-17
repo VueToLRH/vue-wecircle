@@ -31,7 +31,7 @@
         <inputBar ref="inputBar" :option="inputBarOption" @publish="publish"/>
       </div>
     </pullRefreshView>
-    <div v-show="showPWA" @click="showPWA = false" class="add-screen"></div>
+    <!-- <div v-show="showPWA" @click="showPWA = false" class="add-screen"></div> -->
   </div>
 </template>
 

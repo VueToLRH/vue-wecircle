@@ -33,21 +33,21 @@
   <script type="text/javascript" src="<%= BASE_URL %>lib/slider/slider.js"></script>
 
   <script type="text/javascript">
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw-my.js', {
-            scope: '/'
-          })
-          .then(function (registration) {
-            // 注册成功
-            console.log('ServiceWorker registration successful with scope: ', registration.scope)
-          })
-          .catch(function (err) {
-            // 注册失败:(
-            console.log('ServiceWorker registration failed: ', err)
-          })
-      })
-    }
+    // if ('serviceWorker' in navigator) {
+    //   window.addEventListener('load', function () {
+    //     navigator.serviceWorker.register('/sw-my.js', {
+    //         scope: '/'
+    //       })
+    //       .then(function (registration) {
+    //         // 注册成功
+    //         console.log('ServiceWorker registration successful with scope: ', registration.scope)
+    //       })
+    //       .catch(function (err) {
+    //         // 注册失败:(
+    //         console.log('ServiceWorker registration failed: ', err)
+    //       })
+    //   })
+    // }
   </script>
   <!-- built files will be auto injected -->
 </body>

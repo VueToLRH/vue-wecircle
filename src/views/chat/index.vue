@@ -57,10 +57,11 @@ export default {
     // recieveMsg就代表socket.on('recieveMsg',function(){...})，
     // 在和对方聊天时，自己发的消息直接在本地push到dataList里面，而通过recieveMsg将接收到的对方发的消息，也不断的push进去。
     recieveMsg: function (obj) {
-      if (obj.formUser._id === this.toUserId) {
+      console.log('socket 接收信息')
+      if (obj.fromUser._id === this.toUserId) {
         this.afterCommit({
           content: obj.content,
-          formUser: obj.formUser
+          fromUser: obj.fromUser
         })
       }
     },
@@ -87,9 +88,12 @@ export default {
   methods: {
     async fetchData () {
       let resp = await service.get('message/getchathistory', {
-        toUserId: this.toUserId
+        toUser: this.toUserId
       })
       this.dataList = resp.data
+      this.$nextTick(() => {
+        this.scrollToEnd()
+      })
     },
     scrollToEnd (immediate) {
       let ele = this.$refs.chatView
@@ -163,7 +167,7 @@ export default {
       let resp = await service.post('message/addmsg', o)
       this.afterCommit({
         content: { type: 'str', value: obj.value },
-        formUser: this.$store.state.currentUser,
+        fromUser: this.$store.state.currentUser,
         mine: true
       })
       if (resp.code !== 0) {
@@ -178,7 +182,7 @@ export default {
       let resp = await service.post('message/addmsg', o)
       this.afterCommit({
         content: { type: 'pic', value: obj.data },
-        formUser: this.$store.state.currentUser,
+        fromUser: this.$store.state.currentUser,
         mine: true
       })
       if (resp.code !== 0) {

@@ -13,7 +13,7 @@
           <span>搜索</span>
         </label>
       </form>
-      <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+      <a href="javascript:" class="weui-search-bar__cancel-btn" @click="clearSearch">取消</a>
     </div>
     <div class="content-list">
       <div class="weui-loadmore" v-show="loading">
@@ -59,7 +59,7 @@ export default {
         return this.$store.state.keyword
       },
       set: function (newValue) {
-        this.$store.dispatch('keyword', newValue)
+        this.$store.dispatch('setKeyword', newValue)
       }
     }
   },
@@ -70,6 +70,7 @@ export default {
     } else {
       this.searchBarClass = ''
     }
+    this.fetchData()
   },
   mounted () {
     weui.searchBar('#searchBar')

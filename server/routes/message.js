@@ -76,6 +76,7 @@ router.post('/addmsg', async (req, res, next) => {
   var toUserId = req.body.toUser; // 接收者的id
   try {
     var result = await addmsg(myId, content, toUserId);
+    console.log('发送信息 result：', result);
     if (result._id) {
       // 消息通知
       if (result.content.type === 'str') {
