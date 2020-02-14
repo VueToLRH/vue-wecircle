@@ -24,6 +24,7 @@
 + 用户验证方式：[JSON Web Token](./readme/JSON_Web_Token.md)
 + 朋友圈阿里云OSS图片上传：[具体实现参考服务端post.js中上传图片配置](./server/routes/post.js)
 + [移动端键盘高度问题](./readme/KeyboardInput.md)：具体实现可参考组件[inputBar](./src/components/inputBar/index.vue)
++ [聊天场景分析](./readme/Scoket.md)
 
 ## 使用插件/模块
 
@@ -33,6 +34,7 @@
 + [@alicloud/pop-core](https://help.aliyun.com/document_detail/112185.html?spm=a2c4g.11186623.6.634.6ae256e0SAVgOS)：阿里云短信服务Node.js SDK
 + [multer](https://github.com/expressjs/multer/blob/master/README.md)：用于Node.js的multipart/form-data请求数据处理的中间件，multer在解析完请求体后，会向Request对象中添加一个body对象和一个file或files对象（上传多个文件时使用files对象 ）,同时可以设置storage来配置存储的路径，对于使用Express的项目来说，可以很方便的完成文件上传存储功能。
 + [ali-oss](https://www.alibabacloud.com/help/zh/doc-detail/32068.htm?spm=a2c63.p38356.879954.10.6e5d64cd9y9fKY#concept-32068-zh)：阿里云Node.js SDK上传图片
++ [socket.io-client](https://github.com/socketio/socket.io-client)、[vue-socket.io](https://github.com/MetinSeylan/Vue-Socket.io)、[socket.io](https://socket.io/)：客户端实现参考[chat页面](./src/views/chat/index.vue)；服务端实现参考[socket.js](./server/utils/socket.js)、[server/bin/www](./server/bin/www)
 
 ## 项目展示
 
