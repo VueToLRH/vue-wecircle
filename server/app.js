@@ -40,7 +40,15 @@ app.use(function(req, res, next) {
   next();
 });
 
-// app.use 是 Express拦截器 的方法
+// app.use(): 可以生成一个拦截器，优先于我们路由里的 post 和 get 执行。
+// next的参数: 表示这个拦截器逻辑结束了，可以进行后续的其他处理，比如get或者post的逻辑，而同时我们可以在拦截器里设置一些数据，挂在到request上，方便后续使用。
+
+// 用户校验流程：
+// >>> 用户请求接口时，检查是否有token。
+// >>> 有token就将当前用户的信息挂在req对象上，方便后面的路由方法使用。
+// >>> 同时这里有一个续期的逻辑，因为如果我们强制将token设置成一个死的时间，那么无论多久，当时间过了之后，用户的token必定会过期，所以这个是不完美的。
+// >>> 我们将用户的token通过cookie的方式存放在客户端，这样每次请求时，我们将token从cookie里获取到放入http的headers即可。
+// >>> 如果你想把token存储在客户端localStorage里，也是可以的，但是并不推荐这样做，原因是localStorage在某些场景下是不可用的，例如如果浏览器是隐私模式时，而token这种数据又是及其重要的，所以建议放在cookie里最好，同时过期的逻辑可以直接由cookie控制。
 app.use(function (req, res, next) {
   // 获取token数据
   var token = req.headers['wec-access-token'] || 'xx';
