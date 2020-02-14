@@ -17,7 +17,16 @@
 
 ## 基础知识
 
++ 屏幕适配方案：`vw方案`
 + 滚动组件 [scrollView](./src/components/scrollView/index.vue) 开发
++ 用户验证方式：[JSON Web Token](./readme/JSON_Web_Token.md)
++ 跨域配置：[具体实现参考服务端app.js中的配置](./server/app.js)
+
+## 使用插件/模块
+
++ [postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport/blob/master/README_CN.md)：用于进行px和vw之间的转换，具体配置[postcss.config.js](./postcss.config.js)
++ [svg-captcha](https://github.com/produck/svg-captcha/blob/HEAD/README_CN.md)：第三方验证码模块，提供基于SVG图片格式的验证码(相对于一般图片SVG格式更不容易被机器人识别)。[具体使用参考：server/routes/users.js](./server/routes/users.js)
++ [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken#readme)：`JSON Web Token`方案的实现
 
 ## 项目展示
 
